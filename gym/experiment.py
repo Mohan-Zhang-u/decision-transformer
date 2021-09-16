@@ -70,6 +70,11 @@ def experiment(
     with open(dataset_path, 'rb') as f:
         trajectories = pickle.load(f)
 
+    # shrink the size 
+    persentage = variant.get('dataset_percent', 1.0)
+    int(len(trajectories) * persentage)
+    trajectories = random.sample(trajectories, int(len(trajectories) * persentage))
+
     # save all path information into separate lists
     mode = variant.get('mode', 'normal')
     states, traj_lens, returns = [], [], []
