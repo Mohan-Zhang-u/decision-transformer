@@ -303,6 +303,27 @@ if __name__ == '__main__':
     parser.add_argument('--device', type=str, default='cuda')
     parser.add_argument('--log_to_wandb', '-w', type=bool, default=False)
     
+    # for small percentage of trajectories experiment
+    parser.add_argument('--num_of_seeds', type=int, default=1)
+    parser.add_argument('--dataset_percent', type=float, default=1.0)
     args = parser.parse_args()
 
-    experiment('gym-experiment', variant=vars(args))
+    # set random seed
+    num_of_seeds = args.num_of_seeds
+    seeds = []
+    for i in range(num_of_seeds):
+        seed = random.randint(0, 2**32-1)
+        seeds.append(seed)
+        np.random.seed(seed)
+        random.seed(seed)
+
+        # set up env
+        for env_name in ['halfcheetah', 'hopper', 'walker2d']:
+            args.env = env_name
+            for dataset_type in ['medium-expert', 'medium', 'medium-replay', 'expert']:
+                args.dataset = dataset_type
+
+                for percentage in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]:
+                    args.dataset_percent = percentage
+                    exp_prefix = f'gym-experiment-{env_name}-{dataset_type}-{percentage}-{seed}'
+                    experiment(exp_prefix, variant=vars(args))
