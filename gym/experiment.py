@@ -271,12 +271,12 @@ def experiment(
         )
 
     if log_to_wandb:
+        project = variant.get('project', 'decision-transformer')
         run = wandb.init(
             reinit=True,
             name=exp_prefix,
             group=group_name,
-            project='decision-transformer',
-            # project=exp_prefix,
+            project=project,
             config=variant
         )
         # wandb.watch(model)  # wandb has some bug
@@ -332,9 +332,13 @@ if __name__ == '__main__':
             for dataset_type in ['medium', 'expert']:
             # for dataset_type in ['medium-expert', 'medium', 'medium-replay', 'expert']:
                 args.dataset = dataset_type
-
-                for percentage in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]:
+                
+                for percentage in [0.2, 0.4, 0.6, 0.8, 1.0]:
+                # for percentage in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]:
                     args.dataset_percent = percentage
                     exp_prefix = f'{seed}-gym-experiment-{env_name}-{dataset_type}-{percentage}'
                     print(f'exp_prefix now is {exp_prefix}')
-                    experiment(exp_prefix, variant=vars(args))
+                    variant=vars(args)
+                    variant['project'] = f'{seed}-gym-experiment-{env_name}-{dataset_type}'
+                    experiment(exp_prefix, variant=variant)
+``
