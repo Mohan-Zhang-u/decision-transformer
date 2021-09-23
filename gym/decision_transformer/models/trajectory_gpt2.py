@@ -678,7 +678,7 @@ class GPT2Model(GPT2PreTrainedModel):
         if inputs_embeds is None:
             inputs_embeds = self.wte(input_ids)
         # position_embeds = self.wpe(position_ids)
-        hidden_states = inputs_embeds  # + position_embeds
+        hidden_states = inputs_embeds  # + position_embeds  # positional embeddings removed. changed here!!!!!!!!!
 
         if token_type_ids is not None:
             token_type_embeds = self.wte(token_type_ids)
