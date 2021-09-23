@@ -271,10 +271,12 @@ def experiment(
         )
 
     if log_to_wandb:
-        wandb.init(
+        run = wandb.init(
+            reinit=True,
             name=exp_prefix,
             group=group_name,
             project='decision-transformer',
+            # project=exp_prefix,
             config=variant
         )
         # wandb.watch(model)  # wandb has some bug
@@ -283,6 +285,8 @@ def experiment(
         outputs = trainer.train_iteration(num_steps=variant['num_steps_per_iter'], iter_num=iter+1, print_logs=True)
         if log_to_wandb:
             wandb.log(outputs)
+
+    run.finish()
 
 
 if __name__ == '__main__':
@@ -323,12 +327,14 @@ if __name__ == '__main__':
         random.seed(seed)
 
         # set up env
-        for env_name in ['halfcheetah', 'hopper', 'walker2d']:
+        for env_name in ['walker2d', 'hopper', 'halfcheetah']:
             args.env = env_name
-            for dataset_type in ['medium-expert', 'medium', 'medium-replay', 'expert']:
+            for dataset_type in ['medium', 'expert']:
+            # for dataset_type in ['medium-expert', 'medium', 'medium-replay', 'expert']:
                 args.dataset = dataset_type
 
                 for percentage in [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]:
                     args.dataset_percent = percentage
-                    exp_prefix = f'gym-experiment-{env_name}-{dataset_type}-{percentage}-{seed}'
+                    exp_prefix = f'{seed}-gym-experiment-{env_name}-{dataset_type}-{percentage}'
+                    print(f'exp_prefix now is {exp_prefix}')
                     experiment(exp_prefix, variant=vars(args))

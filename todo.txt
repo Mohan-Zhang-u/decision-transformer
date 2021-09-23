@@ -1,1 +1,1 @@
-python experiment.py --env hopper --dataset medium --model_type dt -w True --num_of_seeds 3
+python experiment.py --env hopper --dataset medium --model_type dt -w True --num_of_seeds 1 --num_eval_episodes 10 --max_iters 5 --num_steps_per_iter 10000
