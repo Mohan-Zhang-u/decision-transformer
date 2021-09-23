@@ -341,4 +341,3 @@ if __name__ == '__main__':
                     variant=vars(args)
                     variant['project'] = f'{seed}-gym-experiment-{env_name}-{dataset_type}'
                     experiment(exp_prefix, variant=variant)
-``
